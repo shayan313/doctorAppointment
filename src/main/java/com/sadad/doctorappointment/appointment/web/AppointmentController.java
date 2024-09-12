@@ -1,6 +1,8 @@
 package com.sadad.doctorappointment.appointment.web;
 
+import com.sadad.doctorappointment.appointment.dto.AppointmentDto;
 import com.sadad.doctorappointment.appointment.dto.SlotsRequest;
+import com.sadad.doctorappointment.appointment.mapper.AppointmentMapper;
 import com.sadad.doctorappointment.appointment.model.Appointment;
 import com.sadad.doctorappointment.appointment.service.IAppointmentService;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +13,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/appointment")
@@ -18,9 +22,11 @@ import java.util.Date;
 public class AppointmentController {
 
     private final IAppointmentService service;
+    private final AppointmentMapper appointmentMapper;
+
     @PostMapping("setSlots")
-    public void setSlots(@Valid @RequestBody SlotsRequest request ) {
-         service.setSlots(request );
+    public List<AppointmentDto> setSlots(@Valid @RequestBody SlotsRequest request) {
+        return service.setSlots(request).stream().map(appointmentMapper::toDto).collect(Collectors.toList());
     }
 
     @GetMapping("availableSlots")
@@ -30,7 +36,7 @@ public class AppointmentController {
             @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
             @RequestParam(value = "direction", defaultValue = "DESC") Sort.Direction direction,
             @RequestParam(value = "sortProperties", defaultValue = "id") String sortProperty
-            ) {
+    ) {
         return service.getAll(currentDate, PageRequest.of(currentPage - 1, pageSize, direction, sortProperty));
     }
 

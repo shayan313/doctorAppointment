@@ -9,6 +9,8 @@ public interface IDoctorService {
 
     Doctor findById(Long doctorId);
 
+    Doctor findByIdForUpdate(Long doctorId);
+
     @Transactional
     DoctorDto saveOrUpdate(DoctorDto dto);
 }

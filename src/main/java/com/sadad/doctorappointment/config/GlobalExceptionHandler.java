@@ -5,6 +5,7 @@ import com.sadad.doctorappointment.base.exception.ErrorResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.context.NoSuchMessageException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -80,7 +81,6 @@ public class GlobalExceptionHandler {
 
         try {
             response.message(this.messageSource.getMessage("conflict.is.being.modified.by.another.transaction", null, locale));
-            response.error("conflict.is.being.modified.by.another.transaction");
         } catch (NoSuchMessageException exception) {
             response.message("Conflict: this is being modified by another transaction.");
         }
@@ -89,5 +89,22 @@ public class GlobalExceptionHandler {
         response.details(ex.getMessage());
         return ResponseEntity.status(HttpStatus.CONFLICT).body(response.build());
     }
+
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ErrorResponse> handleDataIntegrityViolation(DataIntegrityViolationException ex) {
+        var response = ErrorResponse.builder();
+
+        try {
+            response.message(this.messageSource.getMessage("database.data.integrity.violation.exception", null, locale));
+        } catch (NoSuchMessageException exception) {
+            response.message("Database error occurred DataIntegrityViolationException");
+        }
+
+        response.error("database.data.integrity.violation.exception");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response.build());
+
+    }
+
 
 }

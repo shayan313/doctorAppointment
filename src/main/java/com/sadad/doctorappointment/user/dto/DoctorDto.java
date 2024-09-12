@@ -28,20 +28,20 @@ public class DoctorDto implements Serializable {
     @NotNull(message = "ساعت شروع به کار پزشک")
     @Schema(example = "23:50")
     @Pattern(regexp = "^([01]?\\d|2[0-3]):[0-5]\\d$", message = "زمان باید به فرمت HH:mm باشد.")
-    private String fromWorkTime;
+    private String startWorkTime;
     @NotNull(message = "ساعت پایان به کار پزشک")
     @Schema(example = "23:50")
     @Pattern(regexp = "^([01]?\\d|2[0-3]):[0-5]\\d$", message = "زمان باید به فرمت HH:mm باشد.")
-    private String toWorkTime;
+    private String endWorkTime;
 
 
    @JsonIgnore
    public LocalTime getFromWorkTimeAsLocalTime() {
-      return LocalTime.parse(fromWorkTime);
+      return LocalTime.parse(startWorkTime);
    }
 
    @JsonIgnore
    public LocalTime getToWorkTimeAsLocalTime() {
-      return LocalTime.parse(toWorkTime);
+      return LocalTime.parse(endWorkTime);
    }
 }

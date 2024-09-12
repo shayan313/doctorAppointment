@@ -18,7 +18,7 @@ import javax.persistence.Table;
 public class Doctor extends Person {
 
     private String specialization;
-    private String fromWorkTime ;
-    private String toWorkTime ;
+    private String startWorkTime ;
+    private String endWorkTime ;
 
 }

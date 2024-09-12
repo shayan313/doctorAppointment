@@ -26,6 +26,10 @@ public class DoctorServiceImpl implements IDoctorService {
     public Doctor findById(Long doctorId) {
         return repository.findById(doctorId).orElseThrow(() -> new ApplicationException("doctor.not.found.exception"));
     }
+    @Override
+    public Doctor findByIdForUpdate(Long doctorId) {
+        return repository.findByIdForUpdate(doctorId).orElseThrow(() -> new ApplicationException("doctor.not.found.exception"));
+    }
 
 
     @Override
