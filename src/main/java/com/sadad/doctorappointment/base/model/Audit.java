@@ -9,6 +9,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import javax.persistence.Column;
 import javax.persistence.EntityListeners;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.Version;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -26,4 +27,8 @@ public abstract class Audit implements Serializable {
     @LastModifiedDate
     @Column(name = "modified_date")
     private Date modifiedDate = new Date();
+
+    @Version
+    private Integer version;  // فیلد برای قفل خوش‌بینانه
+
 }

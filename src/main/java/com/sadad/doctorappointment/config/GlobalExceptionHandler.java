@@ -5,12 +5,14 @@ import com.sadad.doctorappointment.base.exception.ErrorResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.context.NoSuchMessageException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import javax.persistence.OptimisticLockException;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -71,4 +73,21 @@ public class GlobalExceptionHandler {
         }
         return ResponseEntity.badRequest().body(response.build());
     }
+
+    @ExceptionHandler(OptimisticLockException.class)
+    public ResponseEntity<ErrorResponse> handleOptimisticLockException(OptimisticLockException ex) {
+        var response = ErrorResponse.builder();
+
+        try {
+            response.message(this.messageSource.getMessage("conflict.is.being.modified.by.another.transaction", null, locale));
+            response.error("conflict.is.being.modified.by.another.transaction");
+        } catch (NoSuchMessageException exception) {
+            response.message("Conflict: this is being modified by another transaction.");
+        }
+
+        response.error("conflict.is.being.modified.by.another.transaction");
+        response.details(ex.getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(response.build());
+    }
+
 }
