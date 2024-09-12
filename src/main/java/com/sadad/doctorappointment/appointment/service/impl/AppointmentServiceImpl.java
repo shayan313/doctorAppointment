@@ -3,6 +3,7 @@ package com.sadad.doctorappointment.appointment.service.impl;
 import com.sadad.doctorappointment.appointment.constants.AppointmentStatus;
 import com.sadad.doctorappointment.appointment.dto.SlotsRequest;
 import com.sadad.doctorappointment.appointment.model.Appointment;
+import com.sadad.doctorappointment.appointment.projection.AppointmentInfo;
 import com.sadad.doctorappointment.appointment.repository.AppointmentRepository;
 import com.sadad.doctorappointment.appointment.service.IAppointmentService;
 import com.sadad.doctorappointment.base.exception.ApplicationException;
@@ -10,15 +11,12 @@ import com.sadad.doctorappointment.user.model.Doctor;
 import com.sadad.doctorappointment.user.service.IDoctorService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -30,8 +28,8 @@ public class AppointmentServiceImpl implements IAppointmentService {
     private final IDoctorService iDoctorService;
 
     @Override
-    public Page<Appointment> getAll(Date currentDate, Pageable pageable) {
-        return repository.findAll(pageable);
+    public List<AppointmentInfo> findByDateTimeAndDoctor_Id(LocalDate localDate, Long doctorId) {
+        return repository.findByDateTimeAndDoctor_Id(localDate, doctorId);
     }
 
     @Override
@@ -43,7 +41,6 @@ public class AppointmentServiceImpl implements IAppointmentService {
         }
 
         var doctor = iDoctorService.findById(request.getDoctorId());
-
         return createAppointments(request.getFromTimeAsLocalTime(), request.getToTimeAsLocalTime(), doctor, request.getCurrentDateAsLocalDate());
 
 
@@ -58,6 +55,9 @@ public class AppointmentServiceImpl implements IAppointmentService {
 
         while (currentStartTime.isBefore(endTime)) {
             LocalTime currentEndTime = currentStartTime.plusMinutes(30);
+            if (currentEndTime.isAfter(endTime)) {
+                break;
+            }
             if (!currentStartTime.isBefore(startWorkTime) && !endWorkTime.isBefore(currentEndTime)) {
                 Appointment appointment = Appointment.builder()
                         .dateTime(date)

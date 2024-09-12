@@ -37,7 +37,7 @@ public class DoctorServiceImpl implements IDoctorService {
     public DoctorDto saveOrUpdate(DoctorDto dto) {
 
         if (dto.getFromWorkTimeAsLocalTime().isAfter(dto.getToWorkTimeAsLocalTime())) {
-            throw new ApplicationException("application.FromTime.isAfter.ToTime");
+            throw new ApplicationException("doctor.FromTime.isAfter.ToTime");
         }
         if (dto.getId() != null && dto.getId() > 0L) {
             return updateDoctor(dto.getId(), dto);
