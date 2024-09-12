@@ -1,5 +1,6 @@
 package com.sadad.doctorappointment.user.service.impl;
 
+
 import com.sadad.doctorappointment.base.exception.ApplicationException;
 import com.sadad.doctorappointment.user.constants.Role;
 import com.sadad.doctorappointment.user.dto.DoctorDto;
@@ -18,6 +19,7 @@ import javax.persistence.EntityNotFoundException;
 public class DoctorServiceImpl implements IDoctorService {
 
     private final DoctorRepository repository;
+
     private final DoctorMapper doctorMapper;
 
     @Override
@@ -29,7 +31,10 @@ public class DoctorServiceImpl implements IDoctorService {
     @Override
     @Transactional
     public DoctorDto saveOrUpdate(DoctorDto dto) {
-        
+
+        if (dto.getFromWorkTimeAsLocalTime().isAfter(dto.getToWorkTimeAsLocalTime())) {
+            throw new ApplicationException("application.FromTime.isAfter.ToTime");
+        }
         if (dto.getId() != null && dto.getId() > 0L) {
             return updateDoctor(dto.getId(), dto);
         } else {

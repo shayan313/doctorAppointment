@@ -1,4 +1,4 @@
-package com.sadad.doctorappointment.user.web;
+package com.sadad.doctorappointment.user.web.api;
 
 import com.sadad.doctorappointment.user.dto.UserDto;
 import com.sadad.doctorappointment.user.service.IUserService;

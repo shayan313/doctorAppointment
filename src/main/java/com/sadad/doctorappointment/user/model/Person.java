@@ -29,7 +29,5 @@ public abstract class Person extends Audit {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @Version
-    private Integer version;
 
 }
