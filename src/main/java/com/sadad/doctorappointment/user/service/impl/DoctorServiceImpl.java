@@ -9,6 +9,7 @@ import com.sadad.doctorappointment.user.model.Doctor;
 import com.sadad.doctorappointment.user.repository.DoctorRepository;
 import com.sadad.doctorappointment.user.service.IDoctorService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,6 +17,7 @@ import javax.persistence.EntityNotFoundException;
 
 @Service
 @RequiredArgsConstructor
+@Log4j2
 public class DoctorServiceImpl implements IDoctorService {
 
     private final DoctorRepository repository;
@@ -26,6 +28,7 @@ public class DoctorServiceImpl implements IDoctorService {
     public Doctor findById(Long doctorId) {
         return repository.findById(doctorId).orElseThrow(() -> new ApplicationException("doctor.not.found.exception"));
     }
+
     @Override
     public Doctor findByIdForUpdate(Long doctorId) {
         return repository.findByIdForUpdate(doctorId).orElseThrow(() -> new ApplicationException("doctor.not.found.exception"));
@@ -52,15 +55,17 @@ public class DoctorServiceImpl implements IDoctorService {
         Doctor doctor = doctorMapper.toEntity(doctorDto);
         doctor.setRole(Role.DOCTOR);
         Doctor savedDoctor = repository.save(doctor);
+        log.info("updateDoctor Version={} ", savedDoctor.getVersion());
         return doctorMapper.toDto(savedDoctor);
     }
 
     @Transactional
     public DoctorDto updateDoctor(Long id, DoctorDto doctorDto) {
-        Doctor existingDoctor = repository.findById(id)
+        Doctor existingDoctor = repository.findByIdForUpdate(id)
                 .orElseThrow(() -> new EntityNotFoundException("doctor.not.found.exception"));
         doctorMapper.partialUpdate(doctorDto, existingDoctor);
         Doctor updatedDoctor = repository.save(existingDoctor);
+        log.info("updateDoctor Version={} ", updatedDoctor.getVersion());
         return doctorMapper.toDto(updatedDoctor);
     }
 

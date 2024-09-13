@@ -13,6 +13,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import javax.persistence.EntityNotFoundException;
 import javax.persistence.OptimisticLockException;
 import java.util.HashMap;
 import java.util.Locale;
@@ -72,7 +73,8 @@ public class GlobalExceptionHandler {
             response.details(errors);
 
         }
-        return ResponseEntity.badRequest().body(response.build());
+        return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE)
+                .body(response.build());
     }
 
     @ExceptionHandler(OptimisticLockException.class)
@@ -103,6 +105,21 @@ public class GlobalExceptionHandler {
 
         response.error("database.data.integrity.violation.exception");
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response.build());
+
+    }
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleEntityNotFoundException(EntityNotFoundException ex) {
+        var response = ErrorResponse.builder();
+
+        try {
+            response.message(this.messageSource.getMessage(ex.getMessage(), null, locale));
+        } catch (NoSuchMessageException exception) {
+            response.message(ex.getMessage());
+        }
+
+        response.error(ex.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response.build());
 
     }
 
