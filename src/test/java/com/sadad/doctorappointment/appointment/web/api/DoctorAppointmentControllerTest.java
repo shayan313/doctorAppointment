@@ -5,12 +5,14 @@ import com.sadad.doctorappointment.appointment.dto.SlotsRequest;
 import com.sadad.doctorappointment.user.dto.DoctorDto;
 import com.sadad.doctorappointment.user.service.IDoctorService;
 import lombok.extern.log4j.Log4j2;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -78,7 +80,6 @@ class DoctorAppointmentControllerTest extends ApplicationTests {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$.length()").value(0))
-
                 .andReturn()
                 .getResponse()
                 .getContentType();
@@ -187,4 +188,78 @@ class DoctorAppointmentControllerTest extends ApplicationTests {
 
         log.info(res2);
     }
+
+
+
+    @Test
+    @WithMockUser(username = "doctor", roles = {"DOCTOR"})
+    public void getAll() throws Exception {
+
+        var doctorDto = doctorService.saveOrUpdate(DoctorDto.builder()
+                .name("doctor test ")
+                .email("mm@mm.com")
+                .specialization("specialization")
+                .phoneNumber("09129231440")
+                .startWorkTime("07:00")
+                .endWorkTime("18:10")
+                .build());
+
+        var request = new SlotsRequest();
+        request.setDoctorId(doctorDto.getId());
+        request.setFromTime("07:00");
+        request.setToTime("18:00");
+        request.setCurrentDate("2024-09-14");
+
+        var res = mockMvc.perform(post("/api/doctor/appointment/setSlots")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        var res2 = mockMvc.perform(get("/api/doctor/appointment/getAll")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .param("doctorId" , doctorDto.getId().toString())
+                        .param("currentDate" , request.getCurrentDate())
+                        )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$.size()", Matchers.greaterThan(1)))
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        log.info(res2);
+    }
+
+
+    @Test
+    @WithMockUser(username = "doctor", roles = {"DOCTOR"})
+    public void getAll_empty() throws Exception {
+
+        var doctorDto = doctorService.saveOrUpdate(DoctorDto.builder()
+                .name("doctor test ")
+                .email("mm@mm.com")
+                .specialization("specialization")
+                .phoneNumber("09129231440")
+                .startWorkTime("07:00")
+                .endWorkTime("18:10")
+                .build());
+
+        var res2 = mockMvc.perform(get("/api/doctor/appointment/getAll")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .param("doctorId" , doctorDto.getId().toString())
+                        .param("currentDate" , "2000-09-11")
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$.size()", Matchers.lessThan(1)))
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        log.info(res2);
+    }
+
 }

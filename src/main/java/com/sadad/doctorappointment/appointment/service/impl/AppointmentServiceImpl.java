@@ -15,6 +15,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -49,6 +50,24 @@ public class AppointmentServiceImpl implements IAppointmentService {
         var doctor = iDoctorService.findById(request.getDoctorId());
         return createAppointments(request.getFromTimeAsLocalTime(), request.getToTimeAsLocalTime(), doctor, request.getCurrentDateAsLocalDate());
 
+
+    }
+
+    @Override
+    @Transactional
+    public void deleteAppointment(Long appointmentId, Long doctorId) {
+        var entity = repository.findByIdWithLock(appointmentId)
+                .orElseThrow(() -> new EntityNotFoundException("appointment.not.found.exception"));
+
+        /*   if (!entity.getDoctor().getId().equals(doctorId)) {
+            throw new ApplicationException();
+        }*/
+
+        if (!AppointmentStatus.OPEN.equals(entity.getStatus())  ){
+            throw new ApplicationException("appointment.status.isNot.open.exception");
+        }
+
+        repository.delete(entity);
 
     }
 

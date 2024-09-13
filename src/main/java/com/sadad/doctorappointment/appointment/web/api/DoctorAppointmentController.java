@@ -41,7 +41,14 @@ public class DoctorAppointmentController {
             AppointmentStatus status,
             Long doctorId) {
         var localDate = currentDate != null ? LocalDate.parse(currentDate) : null;
-        return service.findAllByDoctor_Id(doctorId, localDate ,status );
+        return service.findAllByDoctor_Id(doctorId, localDate, status);
+
+    }
+
+    @DeleteMapping("/{appointmentId}/delete")
+    public void deleteAppointment(@PathVariable Long appointmentId) {
+        Long doctorId = null;//بعد از کانفیگ tokenInfo
+        service.deleteAppointment(appointmentId, doctorId);
 
     }
 

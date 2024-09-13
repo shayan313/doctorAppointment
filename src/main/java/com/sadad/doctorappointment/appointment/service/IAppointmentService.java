@@ -14,4 +14,6 @@ public interface IAppointmentService {
     List<AppointmentDoctorInfo> findAllByDoctor_Id(Long doctorId , LocalDate localDate, AppointmentStatus status);
 
     List<Appointment> setSlots(SlotsRequest request);
+
+    void deleteAppointment(Long appointmentId, Long doctorId);
 }
