@@ -3,6 +3,7 @@ package com.sadad.doctorappointment.appointment.service.impl;
 import com.sadad.doctorappointment.appointment.constants.AppointmentStatus;
 import com.sadad.doctorappointment.appointment.dto.SlotsRequest;
 import com.sadad.doctorappointment.appointment.model.Appointment;
+import com.sadad.doctorappointment.appointment.projection.AppointmentDoctorInfo;
 import com.sadad.doctorappointment.appointment.projection.AppointmentInfo;
 import com.sadad.doctorappointment.appointment.repository.AppointmentRepository;
 import com.sadad.doctorappointment.appointment.service.IAppointmentService;
@@ -30,6 +31,11 @@ public class AppointmentServiceImpl implements IAppointmentService {
     @Override
     public List<AppointmentInfo> findByDateTimeAndDoctor_Id(LocalDate localDate, Long doctorId) {
         return repository.findByDateTimeAndDoctor_Id(localDate, doctorId);
+    }
+
+    @Override
+    public List<AppointmentDoctorInfo> findAllByDoctor_Id(Long doctorId, LocalDate localDate, AppointmentStatus status) {
+        return repository.findByDoctor_IdAndDateTime(doctorId , localDate , status);
     }
 
     @Override

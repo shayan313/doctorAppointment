@@ -1,9 +1,10 @@
 package com.sadad.doctorappointment.appointment.web.api;
 
+import com.sadad.doctorappointment.appointment.constants.AppointmentStatus;
 import com.sadad.doctorappointment.appointment.dto.AppointmentDto;
 import com.sadad.doctorappointment.appointment.dto.SlotsRequest;
 import com.sadad.doctorappointment.appointment.mapper.AppointmentMapper;
-import com.sadad.doctorappointment.appointment.projection.AppointmentInfo;
+import com.sadad.doctorappointment.appointment.projection.AppointmentDoctorInfo;
 import com.sadad.doctorappointment.appointment.service.IAppointmentService;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.RequiredArgsConstructor;
@@ -30,14 +31,17 @@ public class DoctorAppointmentController {
         return service.setSlots(request).stream().map(appointmentMapper::toDto).collect(Collectors.toList());
     }
 
-    @GetMapping("availableSlots")
-    public List<AppointmentInfo> availableSlots(
+    @GetMapping("getAll")
+    public List<AppointmentDoctorInfo> getAll(
             @Schema(type = "LocalDate", implementation = LocalDate.class)
             @Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2}$", message = "تاریخ باید به فرمت yyyy-MM-dd باشد.")
+            @RequestParam(required = false)
             String currentDate,
+            @RequestParam(required = false)
+            AppointmentStatus status,
             Long doctorId) {
-        var localDate = LocalDate.parse(currentDate);
-        return service.findByDateTimeAndDoctor_Id(localDate, doctorId);
+        var localDate = currentDate != null ? LocalDate.parse(currentDate) : null;
+        return service.findAllByDoctor_Id(doctorId, localDate ,status );
 
     }
 
