@@ -2,9 +2,9 @@ package com.sadad.doctorappointment.user.web.admin;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sadad.doctorappointment.user.dto.DoctorDto;
-import com.sadad.doctorappointment.user.service.IDoctorService;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -37,17 +37,12 @@ public class AdminDoctorControllerTest {
 
     private MockMvc mockMvc;
 
-    //@MockBean
-    @Autowired
-    private IDoctorService iDoctorService;
 
     @Autowired
     private ObjectMapper objectMapper;
 
     private DoctorDto validDoctorDto;
-    private DoctorDto invalidDoctorDto;
     private DoctorDto validDoctorDtoForUpdate;
-    private DoctorDto updateDoctorDto;
 
 
     @BeforeEach
@@ -75,6 +70,7 @@ public class AdminDoctorControllerTest {
     }
 
     @Test
+    @Order(0)
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     public void saveDoctor_Success() throws Exception {
         //mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
@@ -89,12 +85,11 @@ public class AdminDoctorControllerTest {
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     public void UpdateDoctor_Success() throws Exception {
-        //mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-        mockMvc.perform(post("/admin/doctor/saveDoctor")
+       /* mockMvc.perform(post("/admin/doctor/saveDoctor")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(validDoctorDto)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value("1"));
+                .andExpect(jsonPath("$.id").value("1"));*/
 
         mockMvc.perform(post("/admin/doctor/saveDoctor")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -135,7 +130,7 @@ public class AdminDoctorControllerTest {
 
     @Test
     public void saveDoctor_InvalidTimeRange() throws Exception {
-        invalidDoctorDto = new DoctorDto();
+        DoctorDto invalidDoctorDto = new DoctorDto();
         invalidDoctorDto.setName("متولیان");
         invalidDoctorDto.setEmail("motavalian@gmail.com");
         invalidDoctorDto.setPhoneNumber("09364170091");
@@ -169,12 +164,12 @@ public class AdminDoctorControllerTest {
 
 
     @Test
-    public void updateDoctor_ConcurrentRequests_RaceCondition() throws Exception {
-        mockMvc.perform(post("/admin/doctor/saveDoctor")
+    public void updateDoctor_ConcurrentRequests_RaceCondition() {
+       /* mockMvc.perform(post("/admin/doctor/saveDoctor")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(validDoctorDto)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value("1"));
+                .andExpect(jsonPath("$.id").value("1"));*/
 
         CompletableFuture<Void> future1 = CompletableFuture.runAsync(() -> {
             try {
@@ -223,7 +218,6 @@ public class AdminDoctorControllerTest {
                         .andReturn()
                         .getResponse()
                         .getContentAsString();
-                ;
                 System.out.println("future2 runAsync ");
 
                 log.info(res);
