@@ -1,42 +1,25 @@
 package com.sadad.doctorappointment.user.web.admin;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sadad.doctorappointment.ApplicationTests;
 import com.sadad.doctorappointment.user.dto.DoctorDto;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-
-@SpringBootTest
 @Log4j2
-public class AdminDoctorControllerTest {
-
-    @Autowired
-    private WebApplicationContext webApplicationContext;
-
-    @Autowired
-    private Executor taskExecutor;
-
-    private MockMvc mockMvc;
+public class AdminDoctorControllerTest extends ApplicationTests {
 
 
-    @Autowired
-    private ObjectMapper objectMapper;
 
     private DoctorDto validDoctorDto;
     private DoctorDto validDoctorDtoForUpdate;
@@ -63,12 +46,11 @@ public class AdminDoctorControllerTest {
         validDoctorDtoForUpdate.setStartWorkTime("07:00");
         validDoctorDtoForUpdate.setEndWorkTime("17:00");
 
-
     }
 
     @Test
     @Order(0)
-    @WithMockUser(username = "admin", roles = {"ADMIN"})
+    @WithMockUser(username = "doctor",password = "123" ,roles = {"DOCTOR"})
     public void saveDoctor_Success() throws Exception {
         //mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
         mockMvc.perform(post("/admin/doctor/saveDoctor")

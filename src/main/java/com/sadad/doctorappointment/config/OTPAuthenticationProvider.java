@@ -1,3 +1,4 @@
+/*
 package com.sadad.doctorappointment.config;
 
 import com.sadad.doctorappointment.user.model.UserInfo;
@@ -50,3 +51,4 @@ public class OTPAuthenticationProvider implements AuthenticationProvider {
         return UsernamePasswordAuthenticationToken.class.isAssignableFrom(authentication);
     }
 }
+*/

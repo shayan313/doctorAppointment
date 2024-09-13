@@ -1,30 +1,73 @@
 package com.sadad.doctorappointment.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.LogoutConfigurer;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
-
-@EnableWebSecurity
+@Configuration
 public class SecurityConfig {
 
-    @Autowired
-   private OTPAuthenticationProvider authenticationProvider ;
     @Bean
-    public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
-        http.authorizeRequests(authorizeRequests ->{
-                    authorizeRequests.antMatchers("admin/**").hasAnyRole("ROLE_ADMIN");
-                    authorizeRequests.antMatchers("user/**").hasAnyRole("ROLE_USER");
-                    authorizeRequests.anyRequest().permitAll();
-                        }
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+                .authorizeHttpRequests(authz -> authz
+                        .antMatchers( "/**","/actuator/**", "/api-docs/**", "/instances/**" , "/h2-console" , "/swagger-ui/**").permitAll()
+                        .antMatchers("/api/doctor/**").hasRole("DOCTOR")  // دسترسی فقط برای پزشکان
+                        .antMatchers("/api/user/**").hasRole("USER")  // دسترسی فقط برای بیماران
+                        .antMatchers("/open/**").permitAll()  // دسترسی عمومی بدون نیاز به احراز هویت
+                        .anyRequest().authenticated()
 
-        ).authenticationProvider(authenticationProvider)
-                .httpBasic().disable()
-                .csrf().disable()
-                .headers().frameOptions().disable();
+                        .and()
+                )
+
+                .formLogin(form -> form.loginPage("/login").permitAll())
+                .logout(LogoutConfigurer::permitAll
+                )
+
+                .headers()
+                .frameOptions()
+                .disable()
+                .and()
+                .csrf().disable();
+
         return http.build();
+    }
+
+    @Bean
+    public UserDetailsService userDetailsService(PasswordEncoder passwordEncoder) {
+        UserDetails doctor = User.builder()
+                .username("doctor")
+                .password(passwordEncoder.encode("123"))
+                .roles("DOCTOR")
+                .build();
+
+        UserDetails patient = User.builder()
+                .username("user")
+                .password(passwordEncoder.encode("123"))
+                .roles("USER")
+                .build();
+
+        return new InMemoryUserDetailsManager(doctor, patient);
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
     }
 
 }

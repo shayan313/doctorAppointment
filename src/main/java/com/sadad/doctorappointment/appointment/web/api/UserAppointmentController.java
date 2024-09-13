@@ -1,4 +1,4 @@
-package com.sadad.doctorappointment.appointment.web;
+package com.sadad.doctorappointment.appointment.web.api;
 
 import com.sadad.doctorappointment.appointment.dto.AppointmentDto;
 import com.sadad.doctorappointment.appointment.dto.SlotsRequest;
@@ -16,14 +16,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/appointment")
+@RequestMapping("api/user/appointment")
 @RequiredArgsConstructor
-public class AppointmentController {
+public class UserAppointmentController {
 
     private final IAppointmentService service;
     private final AppointmentMapper appointmentMapper;
 
-    @PostMapping("setSlots")
+    @PostMapping("دریافت قرار ملاقات")
     public List<AppointmentDto> setSlots(@Valid @RequestBody SlotsRequest request) {
         return service.setSlots(request).stream().map(appointmentMapper::toDto).collect(Collectors.toList());
     }

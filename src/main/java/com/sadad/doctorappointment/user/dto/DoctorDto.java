@@ -2,7 +2,10 @@ package com.sadad.doctorappointment.user.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
@@ -14,6 +17,9 @@ import java.time.LocalTime;
  * DTO for {@link com.sadad.doctorappointment.user.model.Doctor}
  */
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class DoctorDto implements Serializable {
 
     private Long id;

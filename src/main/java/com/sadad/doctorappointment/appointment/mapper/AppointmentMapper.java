@@ -8,9 +8,9 @@ import org.mapstruct.*;
 public interface AppointmentMapper {
     Appointment toEntity(AppointmentDto appointmentDto1);
 
-    @Mapping(source = "doctor.id", target = "doctorId", ignore = true)
-    @Mapping(source = "doctor.name", target = "doctorName", ignore = true)
-    @Mapping(source = "doctor.specialization", target = "doctorSpecialization", ignore = true)
+    @Mapping(source = "doctor.id", target = "doctorId")
+    @Mapping(source = "doctor.name", target = "doctorName")
+    @Mapping(source = "doctor.specialization", target = "doctorSpecialization")
     AppointmentDto toDto(Appointment appointment);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
