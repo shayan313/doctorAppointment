@@ -18,7 +18,8 @@ public class AppointmentDto implements Serializable {
     String endTime;
     AppointmentStatus status;
     Long doctorId;
-    String doctorName;
+    String doctorFirstName;
+    String doctorLastName;
     String doctorSpecialization;
 
 

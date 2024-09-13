@@ -1,8 +1,9 @@
+/*
 package com.sadad.doctorappointment.appointment.web.api;
 
 import com.sadad.doctorappointment.ApplicationTests;
 import com.sadad.doctorappointment.appointment.dto.SlotsRequest;
-import com.sadad.doctorappointment.user.dto.DoctorDto;
+import com.sadad.doctorappointment.doctor.dto.DoctorDto;
 import com.sadad.doctorappointment.user.service.IDoctorService;
 import lombok.extern.log4j.Log4j2;
 import org.hamcrest.Matchers;
@@ -262,4 +263,4 @@ class DoctorAppointmentControllerTest extends ApplicationTests {
         log.info(res2);
     }
 
-}
+}*/

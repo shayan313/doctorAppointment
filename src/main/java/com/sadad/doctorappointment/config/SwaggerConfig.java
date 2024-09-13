@@ -19,9 +19,7 @@ public class SwaggerConfig {
                         .version("v1.0")
                         .description("API Documentation for Appointment System"))
                 .addSecurityItem(new SecurityRequirement().addList("Basic Authentication"))
-                .addSecurityItem(new SecurityRequirement().addList("Bearer Authentication"))
                 .components(new Components().addSecuritySchemes("Bearer Authentication",
-
                         new SecurityScheme().type(SecurityScheme.Type.HTTP).scheme("bearer")
                                 .bearerFormat("JWT")));
     }

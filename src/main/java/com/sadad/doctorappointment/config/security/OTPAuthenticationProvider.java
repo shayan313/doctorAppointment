@@ -1,7 +1,7 @@
 /*
 package com.sadad.doctorappointment.config;
 
-import com.sadad.doctorappointment.user.model.UserInfo;
+import com.sadad.doctorappointment.user.model.User;
 import com.sadad.doctorappointment.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -31,7 +31,7 @@ public class OTPAuthenticationProvider implements AuthenticationProvider {
         String otp = authentication.getCredentials().toString();
 
         // اعتبارسنجی شماره تلفن کاربر
-        Optional<UserInfo> patient = userRepository.findByPhoneNumber(phoneNumber);
+        Optional<User> patient = userRepository.findByPhoneNumber(phoneNumber);
         if (patient.isEmpty()) {
             throw new BadCredentialsException("authentication.invalid.phone.number");
         }

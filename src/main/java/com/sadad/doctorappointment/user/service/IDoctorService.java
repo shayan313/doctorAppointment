@@ -1,7 +1,7 @@
 package com.sadad.doctorappointment.user.service;
 
-import com.sadad.doctorappointment.user.dto.DoctorDto;
-import com.sadad.doctorappointment.user.model.Doctor;
+import com.sadad.doctorappointment.doctor.dto.DoctorDto;
+import com.sadad.doctorappointment.doctor.model.Doctor;
 
 public interface IDoctorService {
 

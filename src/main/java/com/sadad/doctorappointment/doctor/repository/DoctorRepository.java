@@ -1,6 +1,6 @@
-package com.sadad.doctorappointment.user.repository;
+package com.sadad.doctorappointment.doctor.repository;
 
-import com.sadad.doctorappointment.user.model.Doctor;
+import com.sadad.doctorappointment.doctor.model.Doctor;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;

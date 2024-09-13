@@ -18,13 +18,14 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select a from Appointment a where a.id = :id")
-    Optional<Appointment> findByIdWithLock(Long id );
+    Optional<Appointment> findByIdWithLock(Long id);
 
 
-    @Query("select a from Appointment a where a.doctor.id = :id " +
+    @Query("select a from Appointment a where a.doctor.id = :doctorId " +
             " and (:dateTime is null or  a.dateTime = :dateTime  ) " +
             " and  (:status is null or  a.status = :status  ) ")
-    List<AppointmentDoctorInfo> findByDoctor_IdAndDateTime(Long id, LocalDate dateTime, AppointmentStatus status);
+    List<AppointmentDoctorInfo> findByDoctor_IdAndDateTime(Long doctorId, LocalDate dateTime, AppointmentStatus status);
 
+    List<AppointmentInfo> findByDoctor_IdAndDateTimeAndStatus(Long id, LocalDate dateTime, AppointmentStatus status);
 
 }

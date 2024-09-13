@@ -1,13 +1,16 @@
-package com.sadad.doctorappointment.user.mapper;
+package com.sadad.doctorappointment.doctor.mapper;
 
-import com.sadad.doctorappointment.user.dto.DoctorDto;
-import com.sadad.doctorappointment.user.model.Doctor;
+import com.sadad.doctorappointment.doctor.dto.DoctorDto;
+import com.sadad.doctorappointment.doctor.model.Doctor;
 import org.mapstruct.*;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING)
 public interface DoctorMapper {
+
+    @Mapping(source = "userId", target = "user.id")
     Doctor toEntity(DoctorDto doctorDto);
 
+    @Mapping(target = "userId", source = "user.id")
     DoctorDto toDto(Doctor doctor);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)

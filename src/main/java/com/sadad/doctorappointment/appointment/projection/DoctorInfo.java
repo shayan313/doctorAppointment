@@ -1,12 +1,11 @@
 package com.sadad.doctorappointment.appointment.projection;
 
+import com.sadad.doctorappointment.doctor.model.Doctor;
+
 /**
- * Projection for {@link com.sadad.doctorappointment.user.model.Doctor}
+ * Projection for {@link Doctor}
  */
 public interface DoctorInfo {
-    Long getId();
-
-    String getName();
-
     String getSpecialization();
+    UserInfo getUser();
 }

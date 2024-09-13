@@ -1,20 +1,20 @@
-package com.sadad.doctorappointment.user.dto;
+package com.sadad.doctorappointment.doctor.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.sadad.doctorappointment.doctor.model.Doctor;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.io.Serializable;
 import java.time.LocalTime;
 
 /**
- * DTO for {@link com.sadad.doctorappointment.user.model.Doctor}
+ * DTO for {@link Doctor}
  */
 @Data
 @Builder
@@ -22,14 +22,8 @@ import java.time.LocalTime;
 @NoArgsConstructor
 public class DoctorDto implements Serializable {
 
-    private Long id;
-
-    @NotNull(message = "نام پرشک را باید وارد نمایید ")
-    private String name;
-    @Email(message = "ایمیل پزشک را وارد نمایید ")
-    private String email;
-    @NotNull(message = "شماره تماس پزشک را وارد نمایید ")
-    private String phoneNumber;
+    @NotNull(message = "کاربر پزشک پزشک")
+    private Long userId;
     private String specialization;
     @NotNull(message = "ساعت شروع به کار پزشک")
     @Schema(example = "23:50")

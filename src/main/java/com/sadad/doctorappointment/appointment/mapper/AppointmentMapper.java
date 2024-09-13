@@ -9,7 +9,8 @@ public interface AppointmentMapper {
     Appointment toEntity(AppointmentDto appointmentDto1);
 
     @Mapping(source = "doctor.id", target = "doctorId")
-    @Mapping(source = "doctor.name", target = "doctorName")
+    @Mapping(source = "doctor.user.firstName", target = "doctorFirstName")
+    @Mapping(source = "doctor.user.lastName", target = "doctorLastName")
     @Mapping(source = "doctor.specialization", target = "doctorSpecialization")
     AppointmentDto toDto(Appointment appointment);
 

@@ -1,6 +1,6 @@
-package com.sadad.doctorappointment.user.web.admin;
+package com.sadad.doctorappointment.doctor.web.admin;
 
-import com.sadad.doctorappointment.user.dto.DoctorDto;
+import com.sadad.doctorappointment.doctor.dto.DoctorDto;
 import com.sadad.doctorappointment.user.service.IDoctorService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;

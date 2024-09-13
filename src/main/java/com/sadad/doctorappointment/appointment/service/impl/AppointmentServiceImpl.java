@@ -1,6 +1,7 @@
 package com.sadad.doctorappointment.appointment.service.impl;
 
 import com.sadad.doctorappointment.appointment.constants.AppointmentStatus;
+import com.sadad.doctorappointment.appointment.dto.AppointmentRequest;
 import com.sadad.doctorappointment.appointment.dto.SlotsRequest;
 import com.sadad.doctorappointment.appointment.model.Appointment;
 import com.sadad.doctorappointment.appointment.projection.AppointmentDoctorInfo;
@@ -8,7 +9,7 @@ import com.sadad.doctorappointment.appointment.projection.AppointmentInfo;
 import com.sadad.doctorappointment.appointment.repository.AppointmentRepository;
 import com.sadad.doctorappointment.appointment.service.IAppointmentService;
 import com.sadad.doctorappointment.base.exception.ApplicationException;
-import com.sadad.doctorappointment.user.model.Doctor;
+import com.sadad.doctorappointment.doctor.model.Doctor;
 import com.sadad.doctorappointment.user.service.IDoctorService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -59,7 +60,9 @@ public class AppointmentServiceImpl implements IAppointmentService {
         var entity = repository.findByIdWithLock(appointmentId)
                 .orElseThrow(() -> new EntityNotFoundException("appointment.not.found.exception"));
 
-        /*   if (!entity.getDoctor().getId().equals(doctorId)) {
+        // TODO: 9/14/2024  برسی دسترسی کاربر به  ملافات های خودش فقط 
+        /*
+           if (!entity.getDoctor().getId().equals(doctorId)) {
             throw new ApplicationException();
         }*/
 
@@ -70,6 +73,29 @@ public class AppointmentServiceImpl implements IAppointmentService {
         repository.delete(entity);
 
     }
+
+    @Override
+    public List<AppointmentInfo> availableAppointment(Long doctorId , LocalDate localDate ) {
+        return repository.findByDoctor_IdAndDateTimeAndStatus(doctorId , localDate , AppointmentStatus.OPEN);
+    }
+
+    @Override
+    @Transactional
+    public Appointment takenAppointment(AppointmentRequest request) {
+
+        var entity = repository.findByIdWithLock(request.getAppointmentId())
+                .orElseThrow(() -> new EntityNotFoundException("appointment.not.found.exception"));
+
+        if (!AppointmentStatus.OPEN.equals(entity.getStatus())  ){
+            throw new ApplicationException("appointment.status.isNot.open.exception");
+        }
+
+        entity.setPatientName(request.getName());
+        entity.setPatientPhoneNumber(request.getPhoneNumber());
+
+        return null;
+    }
+
 
     @Transactional
     public List<Appointment> createAppointments(LocalTime startTime, LocalTime endTime, Doctor doctor, LocalDate date) {

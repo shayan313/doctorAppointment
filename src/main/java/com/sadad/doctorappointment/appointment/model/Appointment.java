@@ -2,8 +2,7 @@ package com.sadad.doctorappointment.appointment.model;
 
 import com.sadad.doctorappointment.appointment.constants.AppointmentStatus;
 import com.sadad.doctorappointment.base.model.Audit;
-import com.sadad.doctorappointment.user.model.Doctor;
-import com.sadad.doctorappointment.user.model.UserInfo;
+import com.sadad.doctorappointment.doctor.model.Doctor;
 import lombok.*;
 
 import javax.persistence.*;
@@ -35,7 +34,6 @@ public class Appointment extends Audit {
     @JoinColumn(name = "doctor_id")
     private Doctor doctor;
 
-    @ManyToOne
-    @JoinColumn(name = "patient_id")
-    private UserInfo patient;
+    private String patientName;
+    private String patientPhoneNumber;
 }

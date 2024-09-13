@@ -23,6 +23,8 @@ public interface AppointmentDoctorInfo {
 
     AppointmentStatus getStatus();
 
-    UserInfoInfo getPatient();
+    String getPatientName();
+
+    String getPatientPhoneNumber();
 
 }
