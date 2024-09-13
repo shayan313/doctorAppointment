@@ -21,10 +21,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-/*@WebMvcTest(AdminDoctorController.class)
-@ExtendWith(SpringExtension.class)
-@AutoConfigureMockMvc(addFilters = false)
-@ContextConfiguration(classes = Application.class)*/
 @SpringBootTest
 @Log4j2
 public class AdminDoctorControllerTest {
