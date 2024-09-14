@@ -28,4 +28,8 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
 
     List<AppointmentInfo> findByDoctor_IdAndDateTimeAndStatus(Long id, LocalDate dateTime, AppointmentStatus status);
 
+    @Query("select a from Appointment a where a.patientPhoneNumber = :phoneNumber " +
+            " and (:doctorId is null or  a.doctor.id = :doctorId  ) " +
+            " and (:dateTime is null or  a.dateTime = :dateTime  ) ")
+    List<AppointmentInfo> getUserAppointments(String phoneNumber, Long doctorId, LocalDate dateTime);
 }

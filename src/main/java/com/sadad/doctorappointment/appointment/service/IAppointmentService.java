@@ -23,4 +23,6 @@ public interface IAppointmentService {
 
 
     Appointment takenAppointment(AppointmentRequest request);
+
+    List<AppointmentInfo> getUserAppointments(String phoneNumber, Long doctorId, LocalDate localDate);
 }

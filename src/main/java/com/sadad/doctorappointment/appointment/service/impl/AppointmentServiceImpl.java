@@ -37,7 +37,7 @@ public class AppointmentServiceImpl implements IAppointmentService {
 
     @Override
     public List<AppointmentDoctorInfo> findAllByDoctor_Id(Long doctorId, LocalDate localDate, AppointmentStatus status) {
-        return repository.findByDoctor_IdAndDateTime(doctorId , localDate , status);
+        return repository.findByDoctor_IdAndDateTime(doctorId, localDate, status);
     }
 
     @Override
@@ -66,7 +66,7 @@ public class AppointmentServiceImpl implements IAppointmentService {
             throw new ApplicationException();
         }*/
 
-        if (!AppointmentStatus.OPEN.equals(entity.getStatus())  ){
+        if (!AppointmentStatus.OPEN.equals(entity.getStatus())) {
             throw new ApplicationException("appointment.status.isNot.open.exception");
         }
 
@@ -75,8 +75,8 @@ public class AppointmentServiceImpl implements IAppointmentService {
     }
 
     @Override
-    public List<AppointmentInfo> availableAppointment(Long doctorId , LocalDate localDate ) {
-        return repository.findByDoctor_IdAndDateTimeAndStatus(doctorId , localDate , AppointmentStatus.OPEN);
+    public List<AppointmentInfo> availableAppointment(Long doctorId, LocalDate localDate) {
+        return repository.findByDoctor_IdAndDateTimeAndStatus(doctorId, localDate, AppointmentStatus.OPEN);
     }
 
     @Override
@@ -86,14 +86,21 @@ public class AppointmentServiceImpl implements IAppointmentService {
         var entity = repository.findByIdWithLock(request.getAppointmentId())
                 .orElseThrow(() -> new EntityNotFoundException("appointment.not.found.exception"));
 
-        if (!AppointmentStatus.OPEN.equals(entity.getStatus())  ){
+        if (!AppointmentStatus.OPEN.equals(entity.getStatus())) {
             throw new ApplicationException("appointment.status.isNot.open.exception");
         }
 
         entity.setPatientName(request.getName());
         entity.setPatientPhoneNumber(request.getPhoneNumber());
+        entity.setStatus(AppointmentStatus.TAKEN);
 
-        return null;
+        repository.save(entity);
+        return entity;
+    }
+
+    @Override
+    public List<AppointmentInfo> getUserAppointments(String phoneNumber, Long doctorId, LocalDate localDate) {
+        return repository.getUserAppointments(phoneNumber , doctorId ,localDate);
     }
 
 
