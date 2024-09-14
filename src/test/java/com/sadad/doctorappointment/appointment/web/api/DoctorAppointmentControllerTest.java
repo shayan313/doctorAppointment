@@ -1,7 +1,10 @@
 package com.sadad.doctorappointment.appointment.web.api;
 
 import com.sadad.doctorappointment.ApplicationTests;
+import com.sadad.doctorappointment.appointment.dto.AppointmentRequest;
 import com.sadad.doctorappointment.appointment.dto.SlotsRequest;
+import com.sadad.doctorappointment.appointment.model.Appointment;
+import com.sadad.doctorappointment.appointment.service.IAppointmentService;
 import com.sadad.doctorappointment.doctor.dto.DoctorDto;
 import com.sadad.doctorappointment.user.dto.UserDto;
 import com.sadad.doctorappointment.user.service.IDoctorService;
@@ -15,8 +18,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -29,7 +34,12 @@ class DoctorAppointmentControllerTest extends ApplicationTests {
     @Autowired
     UserService userService ;
 
+    @Autowired
+    IAppointmentService appointmentService ;
     private DoctorDto doctorDto;
+
+
+    private List<Appointment> appointmentList = new ArrayList<>();
 
     @BeforeEach
     public void setUp() {
@@ -51,6 +61,15 @@ class DoctorAppointmentControllerTest extends ApplicationTests {
                 .startWorkTime("07:00")
                 .endWorkTime("18:10")
                 .build());
+
+        var slotsRequest = new SlotsRequest();
+        slotsRequest.setDoctorId(doctorDto.getUserId());
+        slotsRequest.setFromTime("07:00");
+        slotsRequest.setToTime("18:00");
+        slotsRequest.setCurrentDate("2024-10-13");
+        appointmentList =  appointmentService.setSlots(slotsRequest);
+
+
     }
     @Test
     @Order(0)
@@ -223,7 +242,44 @@ class DoctorAppointmentControllerTest extends ApplicationTests {
     }
 
 
+    @Test
+    public void deleteAppointment_isNotFound() throws Exception {
 
+        var res =  mockMvc.perform(delete("/api/doctor/appointment/{appointmentId}/delete" ,1590L )
+                        .contentType(MediaType.APPLICATION_JSON))
+                 .andExpect(status().isNotFound())
+                 .andExpect(jsonPath("$.error").value("appointment.not.found.exception"))
+                 .andReturn()
+                 .getResponse()
+                 .getContentAsString();
+        log.info(res);
+
+    }
+
+    @Test
+    public void deleteAppointment_isNotAcceptable() throws Exception {
+
+        var appointmentRequest = AppointmentRequest.builder()
+                .appointmentId(appointmentList.get(4).getId())
+                .name("ممد")
+                .phoneNumber("09120000000")
+                .build();
+
+        var takenAppointment = appointmentService.takenAppointment(appointmentRequest);
+
+      var res =  mockMvc.perform(delete("/api/doctor/appointment/{appointmentId}/delete" , takenAppointment.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                )
+              .andExpect(status().isNotAcceptable())
+              .andExpect(jsonPath("$.error").value("appointment.status.isNot.open.exception"))
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+        log.info(res);
+
+
+
+    }
 
 
 }

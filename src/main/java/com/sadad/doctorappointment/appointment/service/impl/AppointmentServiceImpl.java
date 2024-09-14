@@ -62,18 +62,11 @@ public class AppointmentServiceImpl implements IAppointmentService {
         var entity = repository.findByIdWithLock(appointmentId)
                 .orElseThrow(() -> new EntityNotFoundException("appointment.not.found.exception"));
 
-        // TODO: 9/14/2024  برسی دسترسی کاربر به  ملافات های خودش فقط 
-        /*
-           if (!entity.getDoctor().getId().equals(doctorId)) {
-            throw new ApplicationException();
-        }*/
-
         if (!AppointmentStatus.OPEN.equals(entity.getStatus())) {
-            throw new ApplicationException("appointment.status.isNot.open.exception");
+            throw new ApplicationException("appointment.status.isNot.open.exception", HttpStatus.NOT_ACCEPTABLE);
         }
 
         repository.delete(entity);
-
     }
 
     @Override
