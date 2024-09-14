@@ -30,17 +30,16 @@ class DoctorAppointmentControllerTest extends ApplicationTests {
     @Autowired
     UserService userService ;
 
-    private UserDto userDto;
     private DoctorDto doctorDto;
 
     @BeforeEach
     public void setUp() {
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
 
-        userDto = userService.saveOrUpdate(UserDto.builder()
-                .firstName("usertest")
-                .lastName("lastUserTest")
-                .email("test@test.com")
+        UserDto userDto = userService.saveOrUpdate(UserDto.builder()
+                .firstName("firstNameUserTest")
+                .lastName("lastNameUserTest")
+                .email("email@test.com")
                 .password("123")
                 .username("test")
                 .phoneNumber("09129231440")
@@ -138,7 +137,6 @@ class DoctorAppointmentControllerTest extends ApplicationTests {
         request.setCurrentDate("2024/09/13");
 
         var res = mockMvc.perform(post("/api/doctor/appointment/setSlots")
-                        .header("Authorization", "Basic dfgdgfdfgdfgd")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isNotAcceptable())
@@ -161,7 +159,7 @@ class DoctorAppointmentControllerTest extends ApplicationTests {
         request.setToTime("18:00");
         request.setCurrentDate("2024-09-14");
 
-        var res = mockMvc.perform(post("/api/doctor/appointment/setSlots")
+         mockMvc.perform(post("/api/doctor/appointment/setSlots")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
@@ -193,7 +191,7 @@ class DoctorAppointmentControllerTest extends ApplicationTests {
         request.setToTime("18:00");
         request.setCurrentDate("2024-09-14");
 
-        var res = mockMvc.perform(post("/api/doctor/appointment/setSlots")
+         mockMvc.perform(post("/api/doctor/appointment/setSlots")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())

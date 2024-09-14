@@ -34,9 +34,9 @@ public class AdminDoctorControllerTest extends ApplicationTests {
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
 
         userDto = userService.saveOrUpdate(UserDto.builder()
-                .firstName("usertest")
-                .lastName("lastUserTest")
-                .email("test@test.com")
+                .firstName("firstNameUserTest")
+                .lastName("lastNameUserTest")
+                .email("email@test.com")
                 .password("123")
                 .username("test")
                 .phoneNumber("09129231440")
@@ -104,17 +104,6 @@ public class AdminDoctorControllerTest extends ApplicationTests {
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.error").value("user.not.found.exception"));
     }
-  /*  @Test
-    @WithMockUser(username = "user", roles = {"USER"})
-    public void saveDoctor_UserRole_Forbidden() throws Exception {
-       // mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-
-        mockMvc.perform(post("/admin/doctor/saveDoctor")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(new ObjectMapper().writeValueAsString(validDoctorDto)))
-                .andExpect(status().isForbidden());
-    }*/
-
 
     @Test
     public void saveDoctor_InvalidTimeRange() throws Exception {
