@@ -7,7 +7,7 @@ import javax.persistence.*;
 
 
 @Entity
-@Table(name="AUTHORITY")
+@Table(name="AUTHORITY" , schema = "APP")
 public class Authority implements GrantedAuthority {
 
     @Id

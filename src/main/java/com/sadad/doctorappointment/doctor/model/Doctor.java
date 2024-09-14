@@ -16,7 +16,7 @@ import javax.persistence.*;
 @ToString
 @RequiredArgsConstructor
 @Entity
-@Table
+@Table(schema = "APP")
 public class Doctor extends Audit {
 
     @GenericGenerator(name = "generator", strategy = "foreign", parameters = @org.hibernate.annotations.Parameter(name = "property", value = "user"))

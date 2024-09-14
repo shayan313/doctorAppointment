@@ -1,1 +1,1 @@
-create schema APP;
+CREATE SCHEMA APP;

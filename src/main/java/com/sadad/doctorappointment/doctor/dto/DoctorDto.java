@@ -22,11 +22,11 @@ import java.time.LocalTime;
 @NoArgsConstructor
 public class DoctorDto implements Serializable {
 
-    @NotNull(message = "کاربر پزشک پزشک")
+    @NotNull(message = "شناسه کاربری پزشک ضروری است")
     private Long userId;
     private String specialization;
     @NotNull(message = "ساعت شروع به کار پزشک")
-    @Schema(example = "23:50")
+    @Schema(example = "07:00")
     @Pattern(regexp = "^([01]?\\d|2[0-3]):[0-5]\\d$", message = "زمان باید به فرمت HH:mm باشد.")
     private String startWorkTime;
     @NotNull(message = "ساعت پایان به کار پزشک")

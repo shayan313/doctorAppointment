@@ -43,19 +43,21 @@ public class DoctorServiceImpl implements IDoctorService {
         if (dto.getFromWorkTimeAsLocalTime().isAfter(dto.getToWorkTimeAsLocalTime())) {
             throw new ApplicationException("doctor.FromTime.isAfter.ToTime");
         }
-
-        if (dto.getUserId() != null && dto.getUserId() > 0L) {
-            return updateDoctor(dto.getUserId(), dto);
-        } else {
+        var existingDoctor = repository.findByIdForUpdate(dto.getUserId());
+        if (existingDoctor.isPresent()) {
+            return updateDoctor(existingDoctor.get(), dto);
+        }else {
             return saveDoctor(dto);
         }
+
     }
 
 
     @Transactional
     public DoctorDto saveDoctor(DoctorDto doctorDto) {
 
-        User user = userRepository.findById(doctorDto.getUserId()).orElseThrow( () -> new EntityNotFoundException("user.not.found.exception"));
+        User user = userRepository.findById(doctorDto.getUserId())
+                .orElseThrow( () -> new EntityNotFoundException("user.not.found.exception"));
         Doctor doctor = doctorMapper.toEntity(doctorDto);
         doctor.setUser(user);
         Doctor savedDoctor = repository.save(doctor);
@@ -64,9 +66,7 @@ public class DoctorServiceImpl implements IDoctorService {
     }
 
     @Transactional
-    public DoctorDto updateDoctor(Long id, DoctorDto doctorDto) {
-        Doctor existingDoctor = repository.findByIdForUpdate(id)
-                .orElseThrow(() -> new EntityNotFoundException("doctor.not.found.exception"));
+    public DoctorDto updateDoctor(Doctor existingDoctor, DoctorDto doctorDto) {
         doctorMapper.partialUpdate(doctorDto, existingDoctor);
         Doctor updatedDoctor = repository.save(existingDoctor);
         log.info("updateDoctor Version={} ", updatedDoctor.getVersion());

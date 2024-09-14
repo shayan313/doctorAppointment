@@ -15,7 +15,7 @@ import java.time.LocalDate;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"doctor_id", "dateTime", "startTime", "endTime"})})
+@Table( schema = "APP", uniqueConstraints = {@UniqueConstraint(columnNames = {"doctor_id", "dateTime", "startTime", "endTime"})})
 public class Appointment extends Audit {
 
     @Id

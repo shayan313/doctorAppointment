@@ -1,3 +1,4 @@
+/*
 package com.sadad.doctorappointment.user.service.impl;
 
 import com.sadad.doctorappointment.user.model.User;
@@ -68,3 +69,4 @@ public class UserServiceImpl implements UserService {
 
 	}
 }
+*/

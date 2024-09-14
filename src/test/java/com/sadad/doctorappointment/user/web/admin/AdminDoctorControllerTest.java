@@ -1,4 +1,3 @@
-/*
 package com.sadad.doctorappointment.user.web.admin;
 
 import com.sadad.doctorappointment.ApplicationTests;
@@ -31,19 +30,14 @@ public class AdminDoctorControllerTest extends ApplicationTests {
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
 
         validDoctorDto = new DoctorDto();
-        validDoctorDto.setFirstName("متولیان");
-        validDoctorDto.setEmail("motavalian@gmail.com");
-        validDoctorDto.setPhoneNumber("09129231440");
+        validDoctorDto.setUserId(1L);
         validDoctorDto.setSpecialization("جراح");
         validDoctorDto.setStartWorkTime("07:00");
         validDoctorDto.setEndWorkTime("17:00");
 
         validDoctorDtoForUpdate = new DoctorDto();
-        validDoctorDtoForUpdate.setId(1L);
-        validDoctorDtoForUpdate.setFirstName("متولیان");
-        validDoctorDtoForUpdate.setEmail("motavalian@gmail.com");
-        validDoctorDtoForUpdate.setPhoneNumber("09364170091");
-        validDoctorDtoForUpdate.setSpecialization("جراح");
+        validDoctorDtoForUpdate.setUserId(1L);
+        validDoctorDtoForUpdate.setSpecialization("جراح داخلی ");
         validDoctorDtoForUpdate.setStartWorkTime("07:00");
         validDoctorDtoForUpdate.setEndWorkTime("17:00");
 
@@ -65,12 +59,11 @@ public class AdminDoctorControllerTest extends ApplicationTests {
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     public void UpdateDoctor_Success() throws Exception {
-       */
-/* mockMvc.perform(post("/admin/doctor/saveDoctor")
+ mockMvc.perform(post("/admin/doctor/saveDoctor")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(validDoctorDto)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value("1"));*//*
+                .andExpect(jsonPath("$.id").value("1"));
 
 
         mockMvc.perform(post("/admin/doctor/saveDoctor")
@@ -85,10 +78,7 @@ public class AdminDoctorControllerTest extends ApplicationTests {
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     public void UpdateDoctor_NotExistsDoctor() throws Exception {
         var dto = new DoctorDto();
-        dto.setId(100000L);
-        dto.setFirstName("متولیان");
-        dto.setEmail("motavalian@gmail.com");
-        dto.setPhoneNumber("09364170091");
+       dto.setUserId(3L);
         dto.setSpecialization("جراح");
         dto.setStartWorkTime("07:00");
         dto.setEndWorkTime("17:00");
@@ -99,8 +89,7 @@ public class AdminDoctorControllerTest extends ApplicationTests {
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.error").value("doctor.not.found.exception"));
     }
-*/
-/*    @Test
+  /*  @Test
     @WithMockUser(username = "user", roles = {"USER"})
     public void saveDoctor_UserRole_Forbidden() throws Exception {
        // mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
@@ -109,15 +98,13 @@ public class AdminDoctorControllerTest extends ApplicationTests {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(validDoctorDto)))
                 .andExpect(status().isForbidden());
-    }*//*
+    }*/
 
 
     @Test
     public void saveDoctor_InvalidTimeRange() throws Exception {
         DoctorDto invalidDoctorDto = new DoctorDto();
-        invalidDoctorDto.setFirstName("متولیان");
-        invalidDoctorDto.setEmail("motavalian@gmail.com");
-        invalidDoctorDto.setPhoneNumber("09364170091");
+        invalidDoctorDto.setUserId(1L);
         invalidDoctorDto.setSpecialization("جراح");
         invalidDoctorDto.setStartWorkTime("18:00");
         invalidDoctorDto.setEndWorkTime("08:00");
@@ -133,12 +120,10 @@ public class AdminDoctorControllerTest extends ApplicationTests {
     @Test
     public void saveDoctor_ValidationError() throws Exception {
         var dto = new DoctorDto();
-        dto.setFirstName(null);
-        dto.setEmail("motavalian@gmail.com");
-        dto.setPhoneNumber("09364170091");
+        dto.setUserId(1L);
         dto.setSpecialization("جراح");
-        dto.setStartWorkTime("18:000");
-        dto.setEndWorkTime("08:000");
+        dto.setStartWorkTime("1sd8:000");
+        dto.setEndWorkTime(null);
         mockMvc.perform(post("/admin/doctor/saveDoctor")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(dto)))
@@ -148,22 +133,18 @@ public class AdminDoctorControllerTest extends ApplicationTests {
 
 
     @Test
-    public void updateDoctor_ConcurrentRequests_RaceCondition() {
-       */
-/* mockMvc.perform(post("/admin/doctor/saveDoctor")
+    public void updateDoctor_ConcurrentRequests_RaceCondition() throws Exception {
+ mockMvc.perform(post("/admin/doctor/saveDoctor")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(validDoctorDto)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value("1"));*//*
+                .andExpect(jsonPath("$.id").value("1"));
 
 
         CompletableFuture<Void> future1 = CompletableFuture.runAsync(() -> {
             try {
                 var updateDto = new DoctorDto();
-                updateDto.setId(1L);
-                updateDto.setFirstName("متولیان");
-                updateDto.setEmail("motavalian@gmail.com");
-                updateDto.setPhoneNumber("09364170091");
+                updateDto.setUserId(1L);
                 updateDto.setSpecialization("جراح");
                 updateDto.setStartWorkTime("07:00");
                 updateDto.setEndWorkTime("17:00");
@@ -188,10 +169,7 @@ public class AdminDoctorControllerTest extends ApplicationTests {
         CompletableFuture<Void> future2 = CompletableFuture.runAsync(() -> {
             try {
                 var updateDto = new DoctorDto();
-                updateDto.setId(1L);
-                updateDto.setFirstName("متولیان");
-                updateDto.setEmail("motavalian@gmail.com");
-                updateDto.setPhoneNumber("09121234567");
+                updateDto.setUserId(1L);
                 updateDto.setSpecialization("جراح");
                 updateDto.setStartWorkTime("07:00");
                 updateDto.setEndWorkTime("17:00");
@@ -218,4 +196,3 @@ public class AdminDoctorControllerTest extends ApplicationTests {
 
 
 }
-*/

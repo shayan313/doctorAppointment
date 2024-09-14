@@ -26,7 +26,7 @@ public class DoctorAppointmentController {
     private final AppointmentMapper appointmentMapper;
 
     @PostMapping("setSlots")
-    @PreAuthorize("hasRole('DOCTOR')")
+    @PreAuthorize("hasAnyRole('RULE_ADMIN')")
     public List<AppointmentDto> setSlots(@Valid @RequestBody SlotsRequest request) {
         return service.setSlots(request).stream().map(appointmentMapper::toDto).collect(Collectors.toList());
     }
