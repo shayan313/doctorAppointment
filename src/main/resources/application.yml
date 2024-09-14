@@ -1,0 +1,43 @@
+spring:
+  application:
+    name: Demo Project For Sadad
+
+  messages:
+    basename: messages  # Location of message bundles
+  h2:
+    console:
+      enabled: true  # Enable H2 console for database management
+  datasource:
+    url: jdbc:h2:mem:doctor_appointment;MODE=Oracle  # H2 database connection string
+    username: sa  # Database username
+    password: sa  # Database password
+  jpa:
+    hibernate:
+      ddl-auto: update  # Set DDL strategy to update existing tables
+      default_schema: app  # Set default schema for JPA entities
+    properties:
+      hibernate:
+        show_sql: true  # Log SQL statements to console
+  boot:
+    admin:
+      routes:
+        endpoints: env, metrics, trace, jolokia, info, configprops  # Endpoints exposed by Spring Boot Admin
+      client:
+        url: http://localhost:8080  # URL of Spring Boot Admin server
+logging:
+  level:
+    root: INFO  # Set root logging level to INFO
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"  # Expose all management endpoints
+  endpoint:
+    health:
+      show-details: always  # Show detailed health information
+      redis:
+        enabled: false  # Disable health check for Redis (if not in use)
+  health:
+    redis:
+      enabled: false  # Disable health check for Redis (if not in use)
