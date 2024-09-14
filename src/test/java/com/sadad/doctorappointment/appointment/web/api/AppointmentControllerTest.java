@@ -20,7 +20,9 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -180,6 +182,85 @@ class AppointmentControllerTest extends ApplicationTests {
     }
 
     @Test
-    void getUserAppointments() {
+    public void takenAppointment_ConcurrentRequests_RaceCondition() throws Exception {
+
+        CompletableFuture<Void> future1 = CompletableFuture.runAsync(() -> {
+            try {
+                appointmentService.deleteAppointment(appointmentList.get(2).getId());
+                System.out.println("future1 runAsync ");
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }, taskExecutor);
+
+        CompletableFuture<Void> future2 = CompletableFuture.runAsync(() -> {
+            try {
+                var appointmentRequest = AppointmentRequest.builder()
+                        .appointmentId(appointmentList.get(2).getId())
+                        .name("شایان")
+                        .phoneNumber("09129231440")
+                        .build();
+                var res = appointmentService.takenAppointment(appointmentRequest);
+                System.out.println("future2 runAsync ");
+                log.info(res);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }, taskExecutor);
+
+        CompletableFuture.allOf(future1, future2).join();
+
+        var finalAppointment = appointmentService.findById(appointmentList.get(2).getId());
+        assertFalse(finalAppointment.isPresent(), "قرار بود وقت ملاقات حذف شود، ولی هنوز وجود دارد!");
+
+    }
+
+
+    @Test
+    void getUserAppointments_Size_GreaterThan0() throws Exception {
+        var appointmentRequest = AppointmentRequest.builder()
+                .appointmentId(appointmentList.get(4).getId())
+                .name("حسن")
+                .phoneNumber("09120000000")
+                .build();
+        var takenAppointment = appointmentService.takenAppointment(appointmentRequest);
+
+        var res = mockMvc.perform(get("/api/appointment/getUserAppointments")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .param("phoneNumber","09120000000")
+                        .param("currentDate", slotsRequest.getCurrentDate())
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$.size()", Matchers.greaterThan(0)))
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+    }
+
+    @Test
+    void getUserAppointments_isEmptyList() throws Exception {
+
+        var appointmentRequest = AppointmentRequest.builder()
+                .appointmentId(appointmentList.get(5).getId())
+                .name("ممد")
+                .phoneNumber("09120000000")
+                .build();
+        var takenAppointment = appointmentService.takenAppointment(appointmentRequest);
+
+        var res = mockMvc.perform(get("/api/appointment/getUserAppointments")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .param("phoneNumber","09121111111")
+                        .param("currentDate", slotsRequest.getCurrentDate())
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$.size()", Matchers.lessThan(1)))
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
     }
 }

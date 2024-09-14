@@ -9,6 +9,7 @@ import com.sadad.doctorappointment.appointment.projection.AppointmentInfo;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 public interface IAppointmentService {
     List<AppointmentInfo> findByDateTimeAndDoctor_Id(LocalDate localDate, Long doctorId);
@@ -17,7 +18,8 @@ public interface IAppointmentService {
 
     List<Appointment> setSlots(SlotsRequest request);
 
-    void deleteAppointment(Long appointmentId, Long doctorId);
+    void deleteAppointment(Long appointmentId);
+    Optional<Appointment> findById(Long appointmentId);
 
     List<AppointmentInfo> availableAppointment(Long doctorId, LocalDate localDate);
 
@@ -25,4 +27,6 @@ public interface IAppointmentService {
     Appointment takenAppointment(AppointmentRequest request);
 
     List<AppointmentInfo> getUserAppointments(String phoneNumber, Long doctorId, LocalDate localDate);
+
+
 }

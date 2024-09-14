@@ -207,8 +207,6 @@ class DoctorAppointmentControllerTest extends ApplicationTests {
 
     @Test
     public void getAll_empty() throws Exception {
-
-
         var res2 = mockMvc.perform(get("/api/doctor/appointment/getAll")
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("doctorId" , doctorDto.getUserId().toString())
@@ -223,5 +221,9 @@ class DoctorAppointmentControllerTest extends ApplicationTests {
 
         log.info(res2);
     }
+
+
+
+
 
 }

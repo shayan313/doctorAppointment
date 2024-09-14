@@ -22,6 +22,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -57,7 +58,7 @@ public class AppointmentServiceImpl implements IAppointmentService {
 
     @Override
     @Transactional
-    public void deleteAppointment(Long appointmentId, Long doctorId) {
+    public void deleteAppointment(Long appointmentId) {
         var entity = repository.findByIdWithLock(appointmentId)
                 .orElseThrow(() -> new EntityNotFoundException("appointment.not.found.exception"));
 
@@ -76,6 +77,11 @@ public class AppointmentServiceImpl implements IAppointmentService {
     }
 
     @Override
+    public Optional<Appointment> findById(Long appointmentId) {
+        return repository.findById(appointmentId);
+    }
+
+    @Override
     public List<AppointmentInfo> availableAppointment(Long doctorId, LocalDate localDate) {
         return repository.findByDoctor_IdAndDateTimeAndStatus(doctorId, localDate, AppointmentStatus.OPEN);
     }
@@ -88,7 +94,7 @@ public class AppointmentServiceImpl implements IAppointmentService {
                 .orElseThrow(() -> new EntityNotFoundException("appointment.not.found.exception"));
 
         if (!AppointmentStatus.OPEN.equals(entity.getStatus())) {
-            throw new ApplicationException("appointment.status.isNot.open.exception" , HttpStatus.NOT_ACCEPTABLE);
+            throw new ApplicationException("appointment.status.isNot.open.exception", HttpStatus.NOT_ACCEPTABLE);
         }
 
         entity.setPatientName(request.getName());
@@ -101,7 +107,7 @@ public class AppointmentServiceImpl implements IAppointmentService {
 
     @Override
     public List<AppointmentInfo> getUserAppointments(String phoneNumber, Long doctorId, LocalDate localDate) {
-        return repository.getUserAppointments(phoneNumber , doctorId ,localDate);
+        return repository.getUserAppointments(phoneNumber, doctorId, localDate);
     }
 
 

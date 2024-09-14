@@ -8,7 +8,6 @@ import com.sadad.doctorappointment.appointment.projection.AppointmentDoctorInfo;
 import com.sadad.doctorappointment.appointment.service.IAppointmentService;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -26,7 +25,6 @@ public class DoctorAppointmentController {
     private final AppointmentMapper appointmentMapper;
 
     @PostMapping("setSlots")
-    @PreAuthorize("hasAnyRole('RULE_ADMIN')")
     public List<AppointmentDto> setSlots(@Valid @RequestBody SlotsRequest request) {
         return service.setSlots(request).stream().map(appointmentMapper::toDto).collect(Collectors.toList());
     }
@@ -47,8 +45,7 @@ public class DoctorAppointmentController {
 
     @DeleteMapping("/{appointmentId}/delete")
     public void deleteAppointment(@PathVariable Long appointmentId) {
-        Long doctorId = null;//بعد از کانفیگ tokenInfo
-        service.deleteAppointment(appointmentId, doctorId);
+        service.deleteAppointment(appointmentId);
 
     }
 
