@@ -13,7 +13,6 @@ import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -55,7 +54,6 @@ class DoctorAppointmentControllerTest extends ApplicationTests {
     }
     @Test
     @Order(0)
-    @WithMockUser(username = "doctor", roles = {"DOCTOR"})
     public void setSlots_Success() throws Exception {
 
 
@@ -77,8 +75,6 @@ class DoctorAppointmentControllerTest extends ApplicationTests {
     }
 
     @Test
-    @Order(0)
-    @WithMockUser(username = "doctor", roles = {"DOCTOR"})
     public void setSlots_TimeRange() throws Exception {
 
 
@@ -103,7 +99,6 @@ class DoctorAppointmentControllerTest extends ApplicationTests {
 
 
     @Test
-    @WithMockUser(username = "doctor", roles = {"DOCTOR"})
     public void setSlots_InvalidTimeRange() throws Exception {
 
 
@@ -127,9 +122,6 @@ class DoctorAppointmentControllerTest extends ApplicationTests {
 
     @Test
     public void setSlots_ValidationError() throws Exception {
-
-
-
         var request = new SlotsRequest();
         request.setDoctorId(doctorDto.getUserId());
         request.setFromTime("18:00");
@@ -149,7 +141,6 @@ class DoctorAppointmentControllerTest extends ApplicationTests {
     }
 
     @Test
-    @WithMockUser(username = "doctor", roles = {"DOCTOR"})
     public void setSlots_integrity_violation_error() throws Exception {
 
 
@@ -182,7 +173,6 @@ class DoctorAppointmentControllerTest extends ApplicationTests {
 
 
     @Test
-    @WithMockUser(username = "doctor", roles = {"DOCTOR"})
     public void getAll() throws Exception {
 
         var request = new SlotsRequest();
@@ -216,7 +206,6 @@ class DoctorAppointmentControllerTest extends ApplicationTests {
 
 
     @Test
-    @WithMockUser(username = "doctor", roles = {"DOCTOR"})
     public void getAll_empty() throws Exception {
 
 

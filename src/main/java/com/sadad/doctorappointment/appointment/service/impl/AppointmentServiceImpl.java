@@ -13,6 +13,7 @@ import com.sadad.doctorappointment.doctor.model.Doctor;
 import com.sadad.doctorappointment.user.service.IDoctorService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -87,7 +88,7 @@ public class AppointmentServiceImpl implements IAppointmentService {
                 .orElseThrow(() -> new EntityNotFoundException("appointment.not.found.exception"));
 
         if (!AppointmentStatus.OPEN.equals(entity.getStatus())) {
-            throw new ApplicationException("appointment.status.isNot.open.exception");
+            throw new ApplicationException("appointment.status.isNot.open.exception" , HttpStatus.NOT_ACCEPTABLE);
         }
 
         entity.setPatientName(request.getName());

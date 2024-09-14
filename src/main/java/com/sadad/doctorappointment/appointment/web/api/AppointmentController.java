@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
 import java.util.List;
@@ -32,7 +33,7 @@ public class AppointmentController {
     }
 
     @PutMapping("/taken")
-    public AppointmentDto takenAppointment(AppointmentRequest request) {
+    public AppointmentDto takenAppointment(@Valid @RequestBody AppointmentRequest request) {
         return appointmentMapper.toDto(service.takenAppointment(request));
     }
 

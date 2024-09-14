@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.concurrent.CompletableFuture;
@@ -60,7 +59,6 @@ public class AdminDoctorControllerTest extends ApplicationTests {
 
     @Test
     @Order(0)
-    @WithMockUser(username = "doctor", password = "123", roles = {"DOCTOR"})
     public void saveDoctor_Success() throws Exception {
         //mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
         mockMvc.perform(post("/admin/doctor/saveDoctor")
@@ -72,7 +70,6 @@ public class AdminDoctorControllerTest extends ApplicationTests {
     }
 
     @Test
-    @WithMockUser(username = "admin", roles = {"ADMIN"})
     public void UpdateDoctor_Success() throws Exception {
         mockMvc.perform(post("/admin/doctor/saveDoctor")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -90,7 +87,6 @@ public class AdminDoctorControllerTest extends ApplicationTests {
     }
 
     @Test
-    @WithMockUser(username = "admin", roles = {"ADMIN"})
     public void UpdateDoctor_NotExistsUser() throws Exception {
         var dto = new DoctorDto();
         dto.setUserId(313L);
