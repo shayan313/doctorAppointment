@@ -1,17 +1,20 @@
-/*
 package com.sadad.doctorappointment.appointment.web.api;
 
 import com.sadad.doctorappointment.ApplicationTests;
 import com.sadad.doctorappointment.appointment.dto.SlotsRequest;
 import com.sadad.doctorappointment.doctor.dto.DoctorDto;
+import com.sadad.doctorappointment.user.dto.UserDto;
 import com.sadad.doctorappointment.user.service.IDoctorService;
+import com.sadad.doctorappointment.user.service.UserService;
 import lombok.extern.log4j.Log4j2;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -24,22 +27,41 @@ class DoctorAppointmentControllerTest extends ApplicationTests {
     @Autowired
     IDoctorService doctorService;
 
+    @Autowired
+    UserService userService ;
+
+    private UserDto userDto;
+    private DoctorDto doctorDto;
+
+    @BeforeEach
+    public void setUp() {
+        mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
+
+        userDto = userService.saveOrUpdate(UserDto.builder()
+                .firstName("usertest")
+                .lastName("lastUserTest")
+                .email("test@test.com")
+                .password("123")
+                .username("test")
+                .phoneNumber("09129231440")
+                .enabled(true)
+                .build());
+
+         doctorDto = doctorService.saveOrUpdate(DoctorDto.builder()
+                .userId(userDto.getId())
+                .specialization("specialization")
+                .startWorkTime("07:00")
+                .endWorkTime("18:10")
+                .build());
+    }
     @Test
     @Order(0)
     @WithMockUser(username = "doctor", roles = {"DOCTOR"})
     public void setSlots_Success() throws Exception {
 
-        var doctorDto = doctorService.saveOrUpdate(DoctorDto.builder()
-                .name("doctor test ")
-                .email("mm@mm.com")
-                .specialization("specialization")
-                .phoneNumber("09129231440")
-                .startWorkTime("07:00")
-                .endWorkTime("18:10")
-                .build());
 
         var request = new SlotsRequest();
-        request.setDoctorId(doctorDto.getId());
+        request.setDoctorId(doctorDto.getUserId());
         request.setFromTime("07:00");
         request.setToTime("18:00");
         request.setCurrentDate("2024-09-13");
@@ -60,17 +82,9 @@ class DoctorAppointmentControllerTest extends ApplicationTests {
     @WithMockUser(username = "doctor", roles = {"DOCTOR"})
     public void setSlots_TimeRange() throws Exception {
 
-        var doctorDto = doctorService.saveOrUpdate(DoctorDto.builder()
-                .name("doctor test ")
-                .email("mm@mm.com")
-                .specialization("specialization")
-                .phoneNumber("09129231440")
-                .startWorkTime("07:00")
-                .endWorkTime("18:10")
-                .build());
 
         var request = new SlotsRequest();
-        request.setDoctorId(doctorDto.getId());
+        request.setDoctorId(doctorDto.getUserId());
         request.setFromTime("09:00");
         request.setToTime("09:15");
         request.setCurrentDate("2024-09-15");
@@ -93,17 +107,9 @@ class DoctorAppointmentControllerTest extends ApplicationTests {
     @WithMockUser(username = "doctor", roles = {"DOCTOR"})
     public void setSlots_InvalidTimeRange() throws Exception {
 
-        var doctorDto = doctorService.saveOrUpdate(DoctorDto.builder()
-                .name("doctor test ")
-                .email("mm@mm.com")
-                .specialization("specialization")
-                .phoneNumber("09129231440")
-                .startWorkTime("07:00")
-                .endWorkTime("18:10")
-                .build());
 
         var request = new SlotsRequest();
-        request.setDoctorId(doctorDto.getId());
+        request.setDoctorId(doctorDto.getUserId());
         request.setFromTime("18:00");
         request.setToTime("07:00");
         request.setCurrentDate("2024-09-13");
@@ -123,17 +129,10 @@ class DoctorAppointmentControllerTest extends ApplicationTests {
     @Test
     public void setSlots_ValidationError() throws Exception {
 
-        var doctorDto = doctorService.saveOrUpdate(DoctorDto.builder()
-                .name("doctor test ")
-                .email("mm@mm.com")
-                .specialization("specialization")
-                .phoneNumber("09129231440")
-                .startWorkTime("07:00")
-                .endWorkTime("18:10")
-                .build());
+
 
         var request = new SlotsRequest();
-        request.setDoctorId(doctorDto.getId());
+        request.setDoctorId(doctorDto.getUserId());
         request.setFromTime("18:00");
         request.setToTime("007:00");
         request.setCurrentDate("2024/09/13");
@@ -155,17 +154,9 @@ class DoctorAppointmentControllerTest extends ApplicationTests {
     @WithMockUser(username = "doctor", roles = {"DOCTOR"})
     public void setSlots_integrity_violation_error() throws Exception {
 
-        var doctorDto = doctorService.saveOrUpdate(DoctorDto.builder()
-                .name("doctor test ")
-                .email("mm@mm.com")
-                .specialization("specialization")
-                .phoneNumber("09129231440")
-                .startWorkTime("07:00")
-                .endWorkTime("18:10")
-                .build());
 
         var request = new SlotsRequest();
-        request.setDoctorId(doctorDto.getId());
+        request.setDoctorId(doctorDto.getUserId());
         request.setFromTime("07:00");
         request.setToTime("18:00");
         request.setCurrentDate("2024-09-14");
@@ -196,17 +187,8 @@ class DoctorAppointmentControllerTest extends ApplicationTests {
     @WithMockUser(username = "doctor", roles = {"DOCTOR"})
     public void getAll() throws Exception {
 
-        var doctorDto = doctorService.saveOrUpdate(DoctorDto.builder()
-                .name("doctor test ")
-                .email("mm@mm.com")
-                .specialization("specialization")
-                .phoneNumber("09129231440")
-                .startWorkTime("07:00")
-                .endWorkTime("18:10")
-                .build());
-
         var request = new SlotsRequest();
-        request.setDoctorId(doctorDto.getId());
+        request.setDoctorId(doctorDto.getUserId());
         request.setFromTime("07:00");
         request.setToTime("18:00");
         request.setCurrentDate("2024-09-14");
@@ -221,7 +203,7 @@ class DoctorAppointmentControllerTest extends ApplicationTests {
 
         var res2 = mockMvc.perform(get("/api/doctor/appointment/getAll")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .param("doctorId" , doctorDto.getId().toString())
+                        .param("doctorId" , doctorDto.getUserId().toString())
                         .param("currentDate" , request.getCurrentDate())
                         )
                 .andExpect(status().isOk())
@@ -239,18 +221,10 @@ class DoctorAppointmentControllerTest extends ApplicationTests {
     @WithMockUser(username = "doctor", roles = {"DOCTOR"})
     public void getAll_empty() throws Exception {
 
-        var doctorDto = doctorService.saveOrUpdate(DoctorDto.builder()
-                .name("doctor test ")
-                .email("mm@mm.com")
-                .specialization("specialization")
-                .phoneNumber("09129231440")
-                .startWorkTime("07:00")
-                .endWorkTime("18:10")
-                .build());
 
         var res2 = mockMvc.perform(get("/api/doctor/appointment/getAll")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .param("doctorId" , doctorDto.getId().toString())
+                        .param("doctorId" , doctorDto.getUserId().toString())
                         .param("currentDate" , "2000-09-11")
                 )
                 .andExpect(status().isOk())
@@ -264,4 +238,3 @@ class DoctorAppointmentControllerTest extends ApplicationTests {
     }
 
 }
-*/

@@ -49,6 +49,18 @@ public class User implements UserDetails {
 			inverseJoinColumns = @JoinColumn(name = "authority_id", referencedColumnName = "id"))
 	private List<Authority> authorities;
 
+
+	public Integer getVersion() {
+		return version;
+	}
+
+	public void setVersion(Integer version) {
+		this.version = version;
+	}
+
+	@Version
+	private Integer version;
+
 	public Long getId() {
 		return id;
 	}

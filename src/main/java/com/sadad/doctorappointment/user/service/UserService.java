@@ -1,5 +1,6 @@
 package com.sadad.doctorappointment.user.service;
 
+import com.sadad.doctorappointment.user.dto.UserDto;
 import com.sadad.doctorappointment.user.model.User;
 
 import java.util.List;
@@ -11,5 +12,6 @@ public interface UserService {
 
 	List<User> findAll();
 
-	void changePassword(String oldPassword, String newPassword);
+	UserDto saveOrUpdate(UserDto userDto);
+
 }
